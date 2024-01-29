@@ -14,6 +14,7 @@
 $ source venv/opencv/bin/activate
 ```
 
+2) OpenCV 설치
 ```sh
 $ python -m pip install opencv-python
 $ python -m pip install --upgrade pip
