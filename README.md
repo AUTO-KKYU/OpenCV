@@ -15,6 +15,6 @@ $ source venv/opencv/bin/activate
 ```
 
 ```sh
-python -m pip install opencv-python
-python -m pip install --upgrade pip
+$ python -m pip install opencv-python
+$ python -m pip install --upgrade pip
 ```
