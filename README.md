@@ -19,3 +19,20 @@ $ source venv/opencv/bin/activate
 $ python -m pip install opencv-python
 $ python -m pip install --upgrade pip
 ```
+
+## example (이미지 파일 열기)
+
+```ruby
+import cv2
+
+# 이미지 파일 열기
+image = cv2.imread('image.jpg')
+# 이미지를 화면에 표시
+cv2.imshow('Image', image)
+
+# 키 입력 대기
+cv2.waitKey(0)
+# 창 닫기
+cv2.destroyAllWindows()
+```
+
