@@ -14,7 +14,7 @@ import datetime
 import numpy as np 
 
 
-from_class = uic.loadUiType('/home/kkyu/amr_ws/opencv/pyqt_opencv/Quiz.ui')[0]
+from_class = uic.loadUiType('C:\\Users\\dknjy\\.anaconda\\Quiz.ui')[0]
 
     
 class WindowClass(QMainWindow, from_class):
@@ -95,6 +95,88 @@ class WindowClass(QMainWindow, from_class):
         self.sliderSaturation.valueChanged.connect(self.inputSaturation)
         self.sliderValue.valueChanged.connect(self.inputValue)
         
+        self.labelPixmap.installEventFilter(self)
+        self.drawing = False
+        self.lastPoint = QPoint()
+        
+    def eventFilter(self, obj, event):
+        if obj == self.labelPixmap:
+            if event.type() == QEvent.Type.MouseButtonPress:
+                self.drawing = True
+                self.lastPoint = event.pos()
+                return True
+            elif event.type() == QEvent.Type.MouseMove:
+                if (event.buttons() & Qt.MouseButton.LeftButton) and self.drawing:
+                    self.drawLineTo(event.pos())
+                    self.lastPoint = event.pos()
+                    return True
+            elif event.type() == QEvent.Type.MouseButtonRelease:
+                if event.button() == Qt.MouseButton.LeftButton and self.drawing:
+                    self.drawLineTo(event.pos())
+                    self.drawing = False
+                    return True
+        return super().eventFilter(obj, event)
+    
+    def drawLineTo(self, endPoint):
+        painter = QPainter(self.pixmap)
+        painter.setPen(QPen(Qt.GlobalColor.black, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
+        painter.drawLine(self.lastPoint, endPoint)
+        self.lastPoint = endPoint
+        self.labelPixmap.setPixmap(self.pixmap)
+
+    def eventFilter(self, obj, event):
+        if obj == self.labelPixmap:
+            if event.type() == QEvent.Type.MouseButtonPress:
+                self.drawing = True
+                self.lastPoint = event.pos()
+                self.checkCornerPress(event.pos())
+                return True
+            elif event.type() == QEvent.Type.MouseMove:
+                if (event.buttons() & Qt.MouseButton.LeftButton) and self.drawing:
+                    self.drawLineTo(event.pos())
+                    self.lastPoint = event.pos()
+                    return True
+            elif event.type() == QEvent.Type.MouseButtonRelease:
+                if event.button() == Qt.MouseButton.LeftButton and self.drawing:
+                    self.drawLineTo(event.pos())
+                    self.drawing = False
+                    return True
+        return super().eventFilter(obj, event)
+    
+    def checkCornerPress(self, pos):
+        image_width = self.pixmap.width()
+        image_height = self.pixmap.height()
+        corner_threshold = 20  # Adjust this threshold as needed
+        
+        if pos.x() <= corner_threshold and pos.y() <= corner_threshold:
+            # Top-left corner pressed
+            self.applyCornerEffect("top-left")
+        elif pos.x() >= image_width - corner_threshold and pos.y() <= corner_threshold:
+            # Top-right corner pressed
+            self.applyCornerEffect("top-right")
+        elif pos.x() <= corner_threshold and pos.y() >= image_height - corner_threshold:
+            # Bottom-left corner pressed
+            self.applyCornerEffect("bottom-left")
+        elif pos.x() >= image_width - corner_threshold and pos.y() >= image_height - corner_threshold:
+            # Bottom-right corner pressed
+            self.applyCornerEffect("bottom-right")
+    
+    def applyCornerEffect(self, corner):
+        # Implement the effect you desire for each corner here
+        # Example: Apply a rotation or bending effect to the image
+        if corner == "top-left":
+            # Apply transformation to simulate bending or folding
+            # Example: Rotate the image slightly
+            rotated_pixmap = self.pixmap.transformed(QTransform().rotate(10))
+            self.labelPixmap.setPixmap(rotated_pixmap)
+        elif corner == "top-right":
+            pass
+        elif corner == "bottom-left":
+            pass
+        elif corner == "bottom-right":
+            pass
+
+
 
     def apply(self):
         min = self.editMin.text()
