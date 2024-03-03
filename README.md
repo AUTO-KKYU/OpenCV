@@ -1,4 +1,4 @@
-# OpenCV_Study
+# OpenCV (Open Source Computer Vision)
 
 ## OpenCV(Open Source Computer Vision)
 -  영상 처리에 사용할 수 있는 오픈 소스 라이브러리
